@@ -18,3 +18,7 @@ wheels/
 wandb/
 exports/
 tests/logs/
+
+**.log
+**.txt
+month_*

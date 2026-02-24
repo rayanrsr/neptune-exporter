@@ -112,9 +112,15 @@ class MLflowLoader(DataLoader):
                 )
             else:
                 experiment_id = experiment.experiment_id
-                self._logger.info(
-                    f"Using existing experiment '{target_experiment_name}' with ID {experiment_id}"
-                )
+                if experiment.lifecycle_stage == "deleted":
+                    MlflowClient().restore_experiment(experiment_id)
+                    self._logger.info(
+                        f"Restored deleted experiment '{target_experiment_name}' with ID {experiment_id}"
+                    )
+                else:
+                    self._logger.info(
+                        f"Using existing experiment '{target_experiment_name}' with ID {experiment_id}"
+                    )
 
             return TargetExperimentId(experiment_id)
         except Exception:

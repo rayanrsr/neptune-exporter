@@ -323,7 +323,11 @@ class LoaderManager:
         """
         project_id = metadata.project_id
         custom_run_id = metadata.custom_run_id or metadata.run_id
-        experiment_name = metadata.experiment_name
+        raw_experiment_name = metadata.experiment_name
+        if not raw_experiment_name or raw_experiment_name == metadata.run_id:
+            experiment_name = "general"
+        else:
+            experiment_name = raw_experiment_name
         parent_source_run_id = (
             metadata.parent_source_run_id
             if metadata.parent_source_run_id is not None
@@ -337,12 +341,9 @@ class LoaderManager:
         )
 
         # Get or create experiment
-        if experiment_name is not None:
-            target_experiment_id = self._data_loader.create_experiment(
-                project_id=project_id, experiment_name=experiment_name
-            )
-        else:
-            target_experiment_id = None
+        target_experiment_id = self._data_loader.create_experiment(
+            project_id=project_id, experiment_name=experiment_name
+        )
 
         # Check if run already exists (for resumable loading)
         target_run_id = self._data_loader.find_run(
