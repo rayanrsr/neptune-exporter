@@ -84,6 +84,8 @@ class MLflowLoader(DataLoader):
 
     def _get_experiment_name(self, project_id: str, experiment_name: str) -> str:
         """Get MLflow experiment name from Neptune project ID."""
+        if experiment_name.lower().startswith("instadeep/"):
+            experiment_name = experiment_name[len("instadeep/"):]
         name = f"{project_id}/{experiment_name}"
 
         if self.name_prefix:
